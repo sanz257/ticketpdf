@@ -1,0 +1,150 @@
+<html>
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <style>
+        /* Estilo general para el formato de ticket de 380px */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+        }
+        .ticket-container {
+            width: 380px; /* Ancho fijo solicitado */
+            margin: 0 auto;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+        h2 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        p {
+            margin: 3px 0;
+            font-size: 12px;
+        }
+        hr {
+            border-top: 1px dashed #aaa;
+            margin: 15px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 11px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 6px;
+            text-align: left;
+        }
+        thead tr {
+            background-color: #f2f2f2;
+        }
+        .text-right { text-align: right !important; }
+        .text-center { text-align: center !important; }
+        .no-border td { border: none !important; }
+    </style>
+</head>
+<body>
+    <div class="ticket-container">
+        <!-- Encabezado de la Orden -->
+        <div style="text-align: center; margin-bottom: 15px;">
+            <!-- Nota: La URL de Drive para imágenes a veces falla al renderizar el PDF. 
+                 Asegúrate de que la imagen sea pública o usa un hosting externo. -->
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhn1RigTaNWyvkH85r9abn2HQND1WpaYMgEsggfqayYuOo1K-HbmCjbaCTRuUHL8qXtUWTs61SzOuR4Sg5w8vw9QAP0aIM3wpUYchBZDybrXDG8RUwJjR3St1PJVkq_I-bFwEuoeRPfopzQA3orVTrDpLHLjpaLMRq1xomViCN3fpgSs2_KOHAhADl9O_MY/s320/Captura%20de%20pantalla%202025-09-28%20211915.jpg" alt="Logo de la Empresa" style="height: 50px; width: auto; display: block; margin: 0 auto;">
+        </div>
+
+        <h2 style="font-size: 16px; margin-bottom: 5px;">Orden: <?!= data.id_orden ?> | Tipo de Movimiento: <?!= data.tipo_movimiento ?></h2>
+        <p>FECHA/HORA: <?!= data.fecha ?> - <?!= data.hora ?></p>
+        <p>DIRECCIÓN: <?!= data.direccion ?></p>
+        <p>OBSERVACION: <?!= data.observacion ?></p>
+        <p>EMPLEADO: <?!= data.empleado ?></p>
+        <p>Pago: <?!= data.pago ?></p>
+
+        <hr>
+
+        <!-- Detalle del Cliente -->
+        <h2 style="font-size: 14px; margin-bottom: 8px;">Detalle del Cliente</h2>
+        
+        <? if (data.cliente && Object.keys(data.cliente).length > 0) { ?>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 11px;">
+            <tbody>
+                <tr><td style="border: 1px solid #ddd; padding: 6px; width: 30%;">Id_orden</td><td style="border: 1px solid #ddd; padding: 6px;"><?!= data.cliente.Id_orden ?></td></tr>
+                <tr><td style="border: 1px solid #ddd; padding: 6px;">Dni/Ruc</td><td style="border: 1px solid #ddd; padding: 6px;"><?!= data.cliente.Dni_ruc ?></td></tr>
+                <tr><td style="border: 1px solid #ddd; padding: 6px;">Nombre Completo</td><td style="border: 1px solid #ddd; padding: 6px;"><?!= data.cliente.Nombrecomp ?></td></tr>
+                <tr><td style="border: 1px solid #ddd; padding: 6px;">Razón Social</td><td style="border: 1px solid #ddd; padding: 6px;"><?!= data.cliente.Razonsoc ?></td></tr>
+                <tr><td style="border: 1px solid #ddd; padding: 6px;">Contacto</td><td style="border: 1px solid #ddd; padding: 6px;"><?!= data.cliente.Contacto ?></td></tr>
+                <tr><td style="border: 1px solid #ddd; padding: 6px;">Dirección Fiscal</td><td style="border: 1px solid #ddd; padding: 6px;"><?!= data.cliente.Direccionf ?></td></tr>
+            </tbody>
+        </table>
+        <? } else { ?>
+            <p>No se encontró información del cliente.</p>
+        <? } ?>
+
+        <hr>
+
+        <!-- Detalle de la Orden (Productos) -->
+        <h2 style="font-size: 14px; margin-bottom: 8px;">Detalle de la Orden (Productos)</h2>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 11px;">
+            <thead>
+                <tr style="background-color: #f2f2f2;">
+                    <th class="text-center" style="width: 15%;">Cód.</th>
+                    <th class="text-center" style="width: 40%;">Descripción</th>
+                    <th class="text-right" style="width: 10%;">Cant</th>
+                    <th class="text-right" style="width: 15%;">P. Unit</th>
+                    <th class="text-right" style="width: 20%;">P. Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <? for (var i = 0; i < data.items.length; i++) { ?>
+                <? var item = data.items[i]; ?>
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 6px;"><?!= item.codigo ?></td>
+                    <td style="border: 1px solid #ddd; padding: 6px;"><?!= item.descripcion ?></td>
+                    <td class="text-right" style="border: 1px solid #ddd; padding: 6px;"><?!= item.cantidad.toFixed(2) ?></td>
+                    <td class="text-right" style="border: 1px solid #ddd; padding: 6px;"><?!= item.preciounitario.toFixed(2) ?></td>
+                    <td class="text-right" style="border: 1px solid #ddd; padding: 6px;"><?!= item.preciototal.toFixed(2) ?></td>
+                </tr>
+                <? } ?>
+            </tbody>
+        </table>
+
+        <hr>
+
+        <!-- Totales de la Orden -->
+        <table style="width: 100%; border: none; border-collapse: collapse; font-size: 12px; margin-bottom: 20px;">
+            <tr>
+                <td style="width: 50%; border: none;"></td>
+                <td style="width: 50%; border: none; text-align: right;">
+                    <!-- Se utiliza toFixed(2) para garantizar dos decimales -->
+                    <p style="margin: 2px 0; padding: 3px 0;"><strong>Op. Gravadas:</strong> S/ <?!= data.op_gravadas.toFixed(2) ?></p>
+                    <p style="margin: 2px 0; padding: 3px 0;"><strong>IGV (<?!= (IGV_RATE * 100).toFixed(0) ?>%):</strong> S/ <?!= data.IGV.toFixed(2) ?></p>
+                    <p style="margin: 2px 0; padding: 3px 0; font-size: 14px;"><strong>TOTAL A PAGAR:</strong> S/ <?!= data.TOTALAPAGAR.toFixed(2) ?></p>
+                </td>
+            </tr>
+        </table>
+
+        <hr>
+
+        <!-- Firmas -->
+        <table style="width: 100%; border: none; border-collapse: collapse; margin-top: 30px; font-size: 11px;" class="no-border">
+            <tr>
+                <td style="width: 50%; text-align: left; padding-left: 5%;">
+                    <p style="margin: 0;">Firma Empresa: </p>
+                    <br>
+                    <hr style="border-top: 1px solid black; width: 70%; margin: 0; margin-left: 0;">
+                    <p style="margin-top: 5px; font-size: 10px;">FIRMA DE EMPRESA</p>
+                </td>
+                <td style="width: 50%; text-align: right; padding-right: 5%;">
+                    <p style="margin: 0;">Firma Cliente: </p>
+                    <br>
+                    <hr style="border-top: 1px solid black; width: 70%; margin: 0; margin-left: auto;">
+                    <p style="margin-top: 5px; font-size: 10px;">FIRMA DEL CLIENTE</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
